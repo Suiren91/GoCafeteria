@@ -1,0 +1,32 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: 'go.mod'
+    - name: Lint
+      uses: golangci/golangci-lint-action@v6
+    - name: Build
+      run: go build -v ./...
+    - name: Test
+      run: go test -v -coverprofile=coverage.out ./...
+    - name: Check coverage
+      run: |
+        COVERAGE=$(go tool cover -func=coverage.out | grep ^total: | awk '{print $3}' | tr -d '%')
+        echo "Total coverage: ${COVERAGE}%"
+        if [ "$(echo "$COVERAGE < 80.0" | bc)" -eq 1 ]; then
+          echo "::error::Coverage ${COVERAGE}% is below the 80% threshold"
+          exit 1
+        fi
