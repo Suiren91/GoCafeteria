@@ -1,4 +1,4 @@
-module go-cafeteria
+module github.com/Suiren91/go-cafeteria
 
 go 1.26.4
 
