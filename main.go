@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"log"
+
+	"github.com/Suiren91/go-cafeteria/internal/handler"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	r := handler.NewRouter()
+
+	if err := r.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
