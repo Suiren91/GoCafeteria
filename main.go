@@ -2,19 +2,12 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/Suiren91/go-cafeteria/internal/handler"
 )
 
 func main() {
-	r := gin.Default()
-
-	r.GET("/HealthCheck", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "ok",
-		})
-	})
+	r := handler.NewRouter()
 
 	if err := r.Run(); err != nil {
 		log.Fatal(err)
