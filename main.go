@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,5 +16,7 @@ func main() {
 		})
 	})
 
-	r.Run()
+	if err := r.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
