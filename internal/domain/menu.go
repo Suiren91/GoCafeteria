@@ -2,7 +2,7 @@
 package domain
 
 import (
-	"errors"
+	"strings"
 )
 
 type Menu struct {
@@ -13,13 +13,20 @@ type Menu struct {
 	stock       int
 }
 
-// NewMenu は新しいMenuを生成して返します．priceかstockが0未満であればerrorを返します
+// NewMenu は新しいMenuを生成して返します．
+// 以下の場合にエラーを返します:
+//   - nameが空文字か空白のみのとき: [ErrInvalidName]
+//   - priceが負のとき: [ErrNegativePrice]
+//   - stockが負のとき: [ErrNegativeStock]
 func NewMenu(id int, name, description string, price, stock int) (*Menu, error) {
+	if strings.TrimSpace(name) == "" {
+		return nil, ErrInvalidName
+	}
 	if price < 0 {
-		return &Menu{}, errors.New("price must be non-negative")
+		return nil, ErrNegativePrice
 	}
 	if stock < 0 {
-		return &Menu{}, errors.New("stock must be non-negative")
+		return nil, ErrNegativeStock
 	}
 	return &Menu{
 		id:          id,
