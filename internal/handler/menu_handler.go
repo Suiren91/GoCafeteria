@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/Suiren91/go-cafeteria/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,5 +20,8 @@ func CreateNewMenu(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	//TODO: エラーハンドリング(テスト先行で)
+	service.CreateNewMenu(req.Name, req.Description, req.Price, req.Stock)
+
 	c.JSON(http.StatusOK, gin.H{"message": "New menu created"})
 }
