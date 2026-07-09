@@ -14,5 +14,6 @@ func HealthCheck(c *gin.Context) {
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 	r.GET("/health", HealthCheck)
+	r.POST("/menu/new", CreateNewMenu)
 	return r
 }
