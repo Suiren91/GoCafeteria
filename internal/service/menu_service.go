@@ -7,6 +7,7 @@ func CreateNewMenu(id int, name, description string, price, stock int) error {
 	_, err := domain.NewMenu(id, name, description, price, stock)
 	// TODO: DBへの保存処理
 	if err != nil {
+		// TODO: 適切なエラーに翻訳して返却
 		return err
 	}
 	return nil
