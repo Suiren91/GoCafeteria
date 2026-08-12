@@ -1,4 +1,3 @@
-// Package domainは業務で必要なエンティティや値オブジェクトを提供します
 package domain
 
 import (
