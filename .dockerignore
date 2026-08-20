@@ -1,0 +1,25 @@
+# VCS
+.git
+.gitignore
+
+# Dockerfile
+Dockerfile*
+.dockerignore
+*compose.yaml
+*compose.yml 
+
+# Build 
+bin/
+tmp/
+*.out
+
+# CI / Documents
+.github/
+docs/
+README.md
+
+# secret
+.env
+.env*
+*.pem
+*.key
