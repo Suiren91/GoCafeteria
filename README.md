@@ -6,3 +6,7 @@
 - Go 1.26.4
 - Gin
 - PostgreSQL
+
+## Usage
+- `cp .env.example .env`
+- `docker compose up`
