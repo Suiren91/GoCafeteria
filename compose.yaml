@@ -5,11 +5,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: rdb
-      DB_PORT: 5432
-      DB_USER: user
-      DB_PASSWORD: ${DB_PASSWORD:?required}
-      DB_NAME: cafeteria
+      PG_HOST: rdb # 下でrdbという名前でpostgresコンテナを立てているのでこれが解決できる
+      PG_PORT: 5432
+      PG_USER: user
+      PG_PASSWORD: ${DB_PASSWORD:?required}
+      PG_DB: cafeteria
     depends_on:
       rdb:
         condition: service_healthy
