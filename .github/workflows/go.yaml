@@ -10,6 +10,21 @@ on:
 jobs:
   CI:
     runs-on: ubuntu-latest
+    services: #Service Containerの正体はDocker
+      postgres: 
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cafeteria_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports: 
+          - 5432:5432
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Go
@@ -24,6 +39,12 @@ jobs:
       run: go build -v ./...
     - name: Test
       run: go test -v -coverprofile=coverage.out ./...
+      env:
+        PG_HOST: localhost
+        PG_PORT: 5432
+        PG_USER: postgres
+        PG_PASSWORD: postgres
+        PG_DB: cafeteria_test
     - name: Check coverage
       run: |
         COVERAGE=$(go tool cover -func=coverage.out | grep ^total: | awk '{print $3}' | tr -d '%')
