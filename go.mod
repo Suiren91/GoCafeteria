@@ -205,3 +205,5 @@ require (
 	modernc.org/token v1.0.0 // indirect
 	modernc.org/zappy v1.0.0 // indirect
 )
+
+tool github.com/golang-migrate/migrate/v4/cmd/migrate
