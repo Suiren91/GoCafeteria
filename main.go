@@ -42,7 +42,7 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("sql.Open: %w", err)
 	}
-	defer pg.Close()
+	defer func() { _ = pg.Close() }()
 
 	pingCtx, cancel := context.WithTimeout(rootCtx, 5*time.Second)
 	defer cancel()

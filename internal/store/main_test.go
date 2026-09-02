@@ -45,7 +45,7 @@ func run(m *testing.M) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("sql.Open: %w", err)
 	}
-	defer pg.Close()
+	defer func() { _ = pg.Close() }()
 
 	if err := pg.Ping(); err != nil {
 		return 0, fmt.Errorf("ping: %w", err)
