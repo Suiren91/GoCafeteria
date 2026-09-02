@@ -1,6 +1,7 @@
 package handler_test
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -13,7 +14,8 @@ import (
 
 func TestHealthCheckOK(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	r := handler.NewRouter()
+	mock := &MenuServiceMock{}
+	r := handler.NewRouter(handler.NewMenuHandler(mock))
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
@@ -26,7 +28,8 @@ func TestHealthCheckOK(t *testing.T) {
 
 func TestHealthCheckBody(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	r := handler.NewRouter()
+	mock := &MenuServiceMock{}
+	r := handler.NewRouter(handler.NewMenuHandler(mock))
 
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
@@ -45,7 +48,12 @@ func TestHealthCheckBody(t *testing.T) {
 
 func TestCreateNewMenuOK(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-	r := handler.NewRouter()
+	mock := &MenuServiceMock{
+		CreateNewMenuFunc: func(ctx context.Context, name string, description string, price int, stock int) (int, error) {
+			return 1, nil
+		},
+	}
+	r := handler.NewRouter(handler.NewMenuHandler(mock))
 
 	w := httptest.NewRecorder()
 	body := `{"name":"かぼちゃ","description":"ほくほくでうまい","price":150,"stock":100}`

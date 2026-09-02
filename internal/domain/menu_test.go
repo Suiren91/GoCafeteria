@@ -9,7 +9,6 @@ import (
 
 func TestNewMenu(t *testing.T) {
 	tests := map[string]struct {
-		id          int
 		name        string
 		description string
 		price       int
@@ -17,7 +16,6 @@ func TestNewMenu(t *testing.T) {
 		wantErr     error
 	}{
 		"適切なパラメータでメニューを作成できる": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "ほくほくでうまい",
 			price:       150,
@@ -25,7 +23,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     nil,
 		},
 		"名前が空文字だとエラー": {
-			id:          1,
 			name:        "",
 			description: "ほくほくでうまい",
 			price:       150,
@@ -33,7 +30,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     domain.ErrInvalidName,
 		},
 		"名前が空白のみだとエラー": {
-			id:          1,
 			name:        " ",
 			description: "ほくほくでうまい",
 			price:       150,
@@ -41,7 +37,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     domain.ErrInvalidName,
 		},
 		"説明が空文字でもメニューを作成できる": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "",
 			price:       150,
@@ -49,7 +44,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     nil,
 		},
 		"priceが0でもメニューを作成できる": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "ほくほくでうまい",
 			price:       0,
@@ -57,7 +51,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     nil,
 		},
 		"priceが負の数(-1)だとエラー": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "ほくほくでうまい",
 			price:       -1,
@@ -65,7 +58,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     domain.ErrNegativePrice,
 		},
 		"stockが0でもメニューを作成できる": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "ほくほくでうまい",
 			price:       150,
@@ -73,7 +65,6 @@ func TestNewMenu(t *testing.T) {
 			wantErr:     nil,
 		},
 		"stockが負の数(-1)だとエラー": {
-			id:          1,
 			name:        "かぼちゃ",
 			description: "ほくほくでうまい",
 			price:       150,
@@ -83,7 +74,7 @@ func TestNewMenu(t *testing.T) {
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			got, err := domain.NewMenu(tt.id, tt.name, tt.description, tt.price, tt.stock)
+			got, err := domain.NewMenu(tt.name, tt.description, tt.price, tt.stock)
 
 			if !errors.Is(err, tt.wantErr) {
 				t.Fatalf("err want: %v, got: %v", tt.wantErr, err)
@@ -93,9 +84,6 @@ func TestNewMenu(t *testing.T) {
 					t.Errorf("Menu want: nil, got: %v", got)
 				}
 				return
-			}
-			if got.ID() != tt.id {
-				t.Errorf("ID want: %d, got: %d", tt.id, got.ID())
 			}
 			if got.Name() != tt.name {
 				t.Errorf("Name want: %v, got: %v", tt.name, got.Name())

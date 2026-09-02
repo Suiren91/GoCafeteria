@@ -27,10 +27,7 @@ func (s *MenuStore) FindByID(ctx context.Context, id int) (*domain.Menu, error) 
 		}
 		return nil, fmt.Errorf("store: get menu %d: %w", id, err)
 	}
-	menu, err := domain.NewMenu(int(row.ID), row.Name, row.Description, int(row.PriceYen), int(row.Stock))
-	if err != nil {
-		return nil, fmt.Errorf("store: get menu: %w", err)
-	}
+	menu := domain.ReconstructMenu(int(row.ID), row.Name, row.Description, int(row.PriceYen), int(row.Stock))
 	return menu, nil
 }
 
@@ -65,16 +62,13 @@ func (s *MenuStore) ListMenus(ctx context.Context) ([]*domain.Menu, error) {
 	}
 	menus := make([]*domain.Menu, 0, len(smenus))
 	for _, smenu := range smenus {
-		m, err := domain.NewMenu(
+		m := domain.ReconstructMenu(
 			int(smenu.ID),
 			smenu.Name,
 			smenu.Description,
 			int(smenu.PriceYen),
 			int(smenu.Stock),
 		)
-		if err != nil {
-			return nil, fmt.Errorf("store: list menus: convert menu id=%d: %w", smenu.ID, err)
-		}
 		menus = append(menus, m)
 	}
 	return menus, nil

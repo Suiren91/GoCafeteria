@@ -12,12 +12,12 @@ type Menu struct {
 	stock       int
 }
 
-// NewMenu は新しいMenuを生成して返します．
-// 以下の場合にエラーを返します:
+// NewMenu は新しいMenuを生成して返す．
+// 以下の場合にエラーを返す:
 //   - nameが空文字か空白のみのとき: [ErrInvalidName]
 //   - priceが負のとき: [ErrNegativePrice]
 //   - stockが負のとき: [ErrNegativeStock]
-func NewMenu(id int, name, description string, price, stock int) (*Menu, error) {
+func NewMenu(name, description string, price, stock int) (*Menu, error) {
 	if strings.TrimSpace(name) == "" {
 		return nil, ErrInvalidName
 	}
@@ -28,12 +28,23 @@ func NewMenu(id int, name, description string, price, stock int) (*Menu, error) 
 		return nil, ErrNegativeStock
 	}
 	return &Menu{
-		id:          id,
 		name:        name,
 		description: description,
 		price:       price,
 		stock:       stock,
 	}, nil
+}
+
+// ReconstructMenu は永続化されたデータからMenuを復元する
+// 値のバリデーションは行わず，エラーも返さない
+func ReconstructMenu(id int, name, description string, price, stock int) *Menu {
+	return &Menu{
+		id:          id,
+		name:        name,
+		description: description,
+		price:       price,
+		stock:       stock,
+	}
 }
 
 func (m *Menu) ID() int {
