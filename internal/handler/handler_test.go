@@ -86,7 +86,7 @@ func TestCreateNewMenu(t *testing.T) {
 			wantBody:          "",
 		},
 		"在庫が存在しないリクエスト": {
-			body:              `{"name":"かぼちゃ","description":"ほくほくでうまい","price":150"}`,
+			body:              `{"name":"かぼちゃ","description":"ほくほくでうまい","price":150}`,
 			createNewMenuFunc: nil,
 			wantStatus:        http.StatusBadRequest,
 			wantBody:          "",
