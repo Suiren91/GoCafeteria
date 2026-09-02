@@ -29,5 +29,22 @@ services:
       interval: 2s
       timeout: 3s
       retries: 15
+  rdb-test:
+    image: postgres:17
+    profiles: ["test"]
+    ports:
+      - "127.0.0.1:5433:5432" 
+    tmpfs:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?required}
+      POSTGRES_DB: cafeteria_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d cafeteria_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
 volumes:
   db-store:

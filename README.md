@@ -10,3 +10,6 @@
 ## Usage
 - `cp .env.example .env`
 - `docker compose up`
+
+## Memo
+- テスト時に`-short`をつけるとDB接続が必要なテストをスキップする
