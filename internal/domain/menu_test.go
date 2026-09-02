@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewMenu(t *testing.T) {
+	t.Parallel()
 	tests := map[string]struct {
 		name        string
 		description string
@@ -74,6 +75,7 @@ func TestNewMenu(t *testing.T) {
 	}
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			got, err := domain.NewMenu(tt.name, tt.description, tt.price, tt.stock)
 
 			if !errors.Is(err, tt.wantErr) {
@@ -93,6 +95,83 @@ func TestNewMenu(t *testing.T) {
 			}
 			if got.Price() != tt.price {
 				t.Errorf("Price want: %d, got:%d", tt.price, got.Price())
+			}
+			if got.Stock() != tt.stock {
+				t.Errorf("Stock want: %d, got: %d", tt.stock, got.Stock())
+			}
+		})
+	}
+}
+
+func TestReconstructMenu(t *testing.T) {
+	tests := map[string]struct {
+		id          int
+		name        string
+		description string
+		price       int
+		stock       int
+	}{
+		"正常にメニューを復元できる": {
+			id:          1,
+			name:        "ラーメン",
+			description: "まずい",
+			price:       980,
+			stock:       100,
+		},
+		"idが不正でもメニューを復元できる": {
+			id:          -1,
+			name:        "ラーメン",
+			description: "まずい",
+			price:       980,
+			stock:       100,
+		},
+		"名前が不正でもメニューを復元できる": {
+			id:          1,
+			name:        "",
+			description: "まずい",
+			price:       980,
+			stock:       100,
+		},
+		"値段が不正でもメニューを復元できる": {
+			id:          1,
+			name:        "ラーメン",
+			description: "まずい",
+			price:       -1,
+			stock:       100,
+		},
+		"在庫が不正でもメニューを復元できる": {
+			id:          1,
+			name:        "ラーメン",
+			description: "まずい",
+			price:       980,
+			stock:       -1,
+		},
+		"全てが不正でもメニューを復元できる": {
+			id:          -1,
+			name:        "",
+			description: "",
+			price:       -1,
+			stock:       -1,
+		},
+	}
+
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			got := domain.ReconstructMenu(tt.id, tt.name, tt.description, tt.price, tt.stock)
+
+			if got.ID() != tt.id {
+				t.Errorf("ID want: %d, got: %d", tt.id, got.ID())
+			}
+			if got.Name() != tt.name {
+				t.Errorf("Name want: %v, got: %v", tt.name, got.Name())
+			}
+			if got.Description() != tt.description {
+				t.Errorf("Description want: %v, got: %v", tt.description, got.Description())
+			}
+			if got.Price() != tt.price {
+				t.Errorf("Price want: %d, got: %d", tt.price, got.Price())
 			}
 			if got.Stock() != tt.stock {
 				t.Errorf("Stock want: %d, got: %d", tt.stock, got.Stock())
