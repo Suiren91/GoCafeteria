@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/Suiren91/go-cafeteria/internal/domain"
@@ -40,6 +41,7 @@ func (h *MenuHandler) CreateNewMenu(c *gin.Context) {
 	if req.Price == nil || req.Stock == nil {
 		// PriceとStockのnilはJSONデコード時に弾かれるので通常このコードは通らない
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "unexpected error"})
+		return
 	}
 	id, err := h.svc.CreateNewMenu(c.Request.Context(), req.Name, req.Description, *req.Price, *req.Stock)
 	// TODO: ログ書き込み処理
@@ -56,7 +58,9 @@ func (h *MenuHandler) CreateNewMenu(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": domain.ErrNegativeStock.Error()})
 			return
 		}
-		// TODO: 503の分岐も作る可能性あり？
+		// TODO: 将来，ミドルウェアでログ出力する
+		slog.ErrorContext(c.Request.Context(), "create menu failed",
+			"err", err, "path", c.FullPath())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "unexpected error"})
 		return
 	}
