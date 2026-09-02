@@ -21,8 +21,8 @@ type MenuHandler struct {
 type CreateNewMenuReq struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
-	Price       int    `json:"price" binding:"required,gte=0"`
-	Stock       int    `json:"stock" binding:"required,gte=0"`
+	Price       *int   `json:"price" binding:"required"`
+	Stock       *int   `json:"stock" binding:"required"`
 }
 
 func NewMenuHandler(svc MenuService) *MenuHandler {
@@ -37,7 +37,11 @@ func (h *MenuHandler) CreateNewMenu(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	id, err := h.svc.CreateNewMenu(c.Request.Context(), req.Name, req.Description, req.Price, req.Stock)
+	if req.Price == nil || req.Stock == nil {
+		// PriceとStockのnilはJSONデコード時に弾かれるので通常このコードは通らない
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "unexpected error"})
+	}
+	id, err := h.svc.CreateNewMenu(c.Request.Context(), req.Name, req.Description, *req.Price, *req.Stock)
 	// TODO: ログ書き込み処理
 	if err != nil {
 		if errors.Is(err, domain.ErrInvalidName) {
@@ -52,12 +56,12 @@ func (h *MenuHandler) CreateNewMenu(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": domain.ErrNegativeStock.Error()})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": " Unexpected error. Please try later."})
+		// TODO: 503の分岐も作る可能性あり？
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "unexpected error"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "New menu created",
-		"id":      id,
+		"id": id,
 	})
 }
