@@ -23,7 +23,7 @@ func (s *MenuStore) FindByID(ctx context.Context, id int) (*domain.Menu, error) 
 	row, err := s.q.GetMenu(ctx, int64(id))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, domain.ErrMenuNotFould
+			return nil, domain.ErrMenuNotFound
 		}
 		return nil, fmt.Errorf("store: get menu %d: %w", id, err)
 	}
