@@ -8,7 +8,7 @@ services:
       PG_HOST: rdb # 下でrdbという名前でpostgresコンテナを立てているのでこれが解決できる
       PG_PORT: 5432
       PG_USER: user
-      PG_PASSWORD: ${DB_PASSWORD:?required}
+      PG_PASSWORD: ${PG_PASSWORD:?required}
       PG_DB: cafeteria
     depends_on:
       rdb:
@@ -22,12 +22,29 @@ services:
       - db-store:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: ${PG_PASSWROD:?required}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?required}
       POSTGRES_DB: cafeteria
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d cafeteria"]
       interval: 2s
       timeout: 3s
       retries: 15
+  rdb-test:
+    image: postgres:17
+    profiles: ["test"]
+    ports:
+      - "127.0.0.1:5433:5432" 
+    tmpfs:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?required}
+      POSTGRES_DB: cafeteria_test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d cafeteria_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
 volumes:
   db-store:

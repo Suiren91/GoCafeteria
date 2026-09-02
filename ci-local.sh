@@ -7,7 +7,7 @@ echo "==> Build"
 go build -v ./...; or exit 1
 
 echo "==> Test"
-go test -v -coverprofile=coverage.out ./...; or exit 1
+make coverage; or exit 1
 
 echo "==> Check coverage"
 set COVERAGE (go tool cover -func=coverage.out | grep '^total:' | awk '{print $3}' | tr -d '%')

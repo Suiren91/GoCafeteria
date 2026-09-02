@@ -1,0 +1,9 @@
+version: "2"
+sql: 
+  - schema: "./internal/store/migrations/"
+    queries: "./internal/store/queries/"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "store"
+        out: "internal/store"
