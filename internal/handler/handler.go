@@ -1,4 +1,3 @@
-// Package handlerはエンドポイントの生成とクライアントからのHTTPリクエストのハンドリングを担当します
 package handler
 
 import (
