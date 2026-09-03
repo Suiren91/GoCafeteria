@@ -1,6 +1,6 @@
 module github.com/Suiren91/go-cafeteria
 
-go 1.26.4
+go 1.27.0
 
 require (
 	github.com/gin-gonic/gin v1.12.0
