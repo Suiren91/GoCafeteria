@@ -7,7 +7,32 @@ package store
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
+
+const createUser = `-- name: CreateUser :one
+INSERT INTO users(id, email, name) VALUES ($1,$2,$3) RETURNING id, email, name, created_at, updated_at
+`
+
+type CreateUserParams struct {
+	ID    uuid.UUID
+	Email string
+	Name  string
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser, arg.ID, arg.Email, arg.Name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
 
 const getUser = `-- name: GetUser :one
 SELECT id, email, name, created_at, updated_at FROM users WHERE email = $1
@@ -57,4 +82,27 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE users SET email=$2, name=$3, updated_at=now() WHERE id=$1 RETURNING id, email, name, created_at, updated_at
+`
+
+type UpdateUserParams struct {
+	ID    uuid.UUID
+	Email string
+	Name  string
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser, arg.ID, arg.Email, arg.Name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
