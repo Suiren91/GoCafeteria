@@ -106,7 +106,7 @@ func (q *Queries) ListMenus(ctx context.Context) ([]Menu, error) {
 }
 
 const updateMenu = `-- name: UpdateMenu :one
-UPDATE menus SET name=$2, description=$3, price_yen=$4, stock=$5 WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
+UPDATE menus SET name=$2, description=$3, price_yen=$4, stock=$5, updated_at=now() WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
 `
 
 type UpdateMenuParams struct {
@@ -139,7 +139,7 @@ func (q *Queries) UpdateMenu(ctx context.Context, arg UpdateMenuParams) (Menu, e
 }
 
 const updateMenuPrice = `-- name: UpdateMenuPrice :one
-UPDATE menus SET price_yen=$2 WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
+UPDATE menus SET price_yen=$2, updated_at=now() WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
 `
 
 type UpdateMenuPriceParams struct {
@@ -163,7 +163,7 @@ func (q *Queries) UpdateMenuPrice(ctx context.Context, arg UpdateMenuPriceParams
 }
 
 const updateMenuStock = `-- name: UpdateMenuStock :one
-UPDATE menus SET stock=$2 WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
+UPDATE menus SET stock=$2, updated_at=now() WHERE id=$1 RETURNING id, name, description, price_yen, stock, created_at, updated_at
 `
 
 type UpdateMenuStockParams struct {
