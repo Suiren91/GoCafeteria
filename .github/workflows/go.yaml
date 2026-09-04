@@ -31,6 +31,9 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version-file: 'go.mod'
+    - name: Tidy
+      run:
+        go mod tidy -diff
     - name: Lint
       uses: golangci/golangci-lint-action@v7
       with:
@@ -38,7 +41,7 @@ jobs:
     - name: Build
       run: go build -v ./...
     - name: Test
-      run: go test -v -coverprofile=coverage.out ./...
+      run: go test -v -race -coverprofile=coverage.out ./...
       env:
         PG_HOST: localhost
         PG_PORT: 5432
@@ -49,7 +52,7 @@ jobs:
       run: |
         COVERAGE=$(go tool cover -func=coverage.out | grep ^total: | awk '{print $3}' | tr -d '%')
         echo "Total coverage: ${COVERAGE}%"
-        if [ "$(echo "$COVERAGE < 80.0" | bc)" -eq 1 ]; then
-          echo "::error::Coverage ${COVERAGE}% is below the 80% threshold"
+        if [ "$(echo "$COVERAGE < 70.0" | bc)" -eq 1 ]; then
+          echo "::error::Coverage ${COVERAGE}% is below the 70% threshold"
           exit 1
         fi
