@@ -6,6 +6,8 @@ package store
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Menu struct {
@@ -18,4 +20,19 @@ type Menu struct {
 	Stock     int32
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+type User struct {
+	ID    uuid.UUID
+	Email string
+	// 表示名
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type UserPassword struct {
+	UserID       uuid.UUID
+	PasswordHash string
+	UpdatedAt    time.Time
 }
